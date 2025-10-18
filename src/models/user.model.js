@@ -62,7 +62,6 @@ const userSchema = new mongoose.Schema({
       "general-fitness",
       "athletic-performance",
     ],
-    required: true,
   },
   activityLevel: {
     type: String,
