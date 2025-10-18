@@ -18,4 +18,5 @@ class GeminiService {
   }
 }
 
-export default new GeminiService();
+const geminiService = new GeminiService();
+export default geminiService;
