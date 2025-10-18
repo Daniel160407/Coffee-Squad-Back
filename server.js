@@ -23,20 +23,19 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use("/api/gemini", geminiRouter);
+
 app.use(
   "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
-    customCss: ".swagger-ui .topbar { display: none }",
     customSiteTitle: "FitFusion API Docs",
   })
 );
 
-app.use("/api/gemini", geminiRouter);
 
 app.listen(PORT, () => {
   console.log("Server is running on port 3000");
   console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
-  console.log("API Key", process.env.GEMINI_API_KEY);
   connectDB();
 });
