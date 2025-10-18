@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["male", "female", "other", "prefer-not-to-say"],
   },
-  heigth: {
+  height: {
     value: Number,
     unit: {
       type: String,
