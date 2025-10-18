@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import swaggerSpec from "./src/config/swagger.js";
 import swaggerUi from "swagger-ui-express";
+import geminiRouter from "./src/routes/gemini.routes.js";
 import { connectDB } from "./src/config/db.js";
 
 dotenv.config();
@@ -31,7 +32,11 @@ app.use(
   })
 );
 
+app.use("/api/gemini", geminiRouter);
+
 app.listen(PORT, () => {
   console.log("Server is running on port 3000");
+  console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+  console.log("API Key", process.env.GEMINI_API_KEY);
   connectDB();
 });

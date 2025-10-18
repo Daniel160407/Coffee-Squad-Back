@@ -757,7 +757,11 @@ const options = {
       },
     ],
   },
-  apis: ["./src/routes/*.js", "./src/controllers/*.js"], // Path to API docs
+  apis: [
+    "./src/routes/*.js", // for CommonJS
+    "./src/routes/**/*.js", // catches all nested routes
+    "./src/controllers/*.js",
+  ], // Path to API docs
 };
 
 const swaggerSpec = swaggerJsdoc(options);
