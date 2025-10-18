@@ -1,14 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import swaggerSpec from "./src/config/swagger.js";
 import swaggerUi from "swagger-ui-express";
-import geminiRouter from "./src/routes/gemini.routes.js";
-import { connectDB } from "./src/config/db.js";
-import authRouter from "./src/routes/auth.js"
 import cookieParser from "cookie-parser";
-import usersRouter from "./src/routes/users.js"
+import geminiRouter from "./src/routes/gemini.routes.js";
+import authRouter from "./src/routes/auth.routes.js"
+import usersRouter from "./src/routes/users.routes.js"
+import { connectDB } from "./src/config/db.js";
 
 dotenv.config();
 
@@ -27,6 +26,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/gemini", geminiRouter);
+app.use("/auth", authRouter);
+app.use("/users", usersRouter);
 
 app.use(
   "/api-docs",
@@ -35,11 +36,6 @@ app.use(
     customSiteTitle: "FitFusion API Docs",
   })
 );
-
-
-app.use("/auth", authRouter);
-app.use("/users", usersRouter);
-
 
 app.listen(PORT, () => {
   console.log("Server is running on port 3000");
