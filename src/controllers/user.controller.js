@@ -39,3 +39,14 @@ export async function updateUserInfo(req, res) {
 
   await User.updateOne;
 }
+
+export async function getUserInfo(req, res) {
+  try {
+    console.log(req.user);
+    res.status(200).json({ success: true, mesage: "whatever", data: req.user });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, message: error.message, data: error });
+  }
+}
