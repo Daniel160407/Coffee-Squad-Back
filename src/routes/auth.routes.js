@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { registerPost, loginPost } from "../controllers/auth.controller.js";
+import {
+  registerPost,
+  loginPost,
+  logoutPost,
+} from "../controllers/auth.controller.js";
 
 const router = Router();
 
@@ -184,5 +188,43 @@ router.post("/register", registerPost);
  *               data: {}
  */
 router.post("/login", loginPost);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     description: Logout the authenticated user by clearing the JWT token cookie
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "user logged out successfully"
+ *                     data:
+ *                       example: null
+ *         headers:
+ *           Set-Cookie:
+ *             description: JWT token cookie cleared
+ *             schema:
+ *               type: string
+ *               example: "token=; HttpOnly; Secure; SameSite=Strict; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+ *       400:
+ *         description: Bad request - error during logout
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post("/logout", logoutPost);
 
 export default router;
