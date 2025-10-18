@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import geminiRouter from "./src/routes/gemini.routes.js";
 import authRouter from "./src/routes/auth.routes.js"
 import usersRouter from "./src/routes/users.routes.js"
+import workoutRouter from "./src/routes/workout.routes.js"
 import { connectDB } from "./src/config/db.js";
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/api/gemini", geminiRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/workouts", workoutRouter);
 
 app.use(
   "/api-docs",
