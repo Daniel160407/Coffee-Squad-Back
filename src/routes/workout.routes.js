@@ -22,6 +22,14 @@ import {
   removeExerciseFromWorkout,
   // Statistics
   getWorkoutStats,
+  // Progress tracking
+  createProgress,
+  getProgressEntries,
+  getProgressEntry,
+  updateProgressEntry,
+  deleteProgressEntry,
+  getProgressStats,
+  getProgressTrends,
 } from "../controllers/workout.controller.js";
 
 const router = Router();
@@ -1147,5 +1155,621 @@ router.delete(
  *         description: Unauthorized - invalid or missing token
  */
 router.get("/stats", getWorkoutStats);
+
+// ========== PROGRESS TRACKING ROUTES ==========
+
+/**
+ * @swagger
+ * /api/workouts/progress:
+ *   post:
+ *     summary: Create a new progress entry
+ *     description: Create a new progress tracking entry for the authenticated user
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date-time
+ *                 description: The date of the progress entry
+ *               weight:
+ *                 type: object
+ *                 properties:
+ *                   value:
+ *                     type: number
+ *                     example: 75.5
+ *                   unit:
+ *                     type: string
+ *                     enum: [kg, lbs]
+ *                     example: "kg"
+ *               bodyFatPercentage:
+ *                 type: number
+ *                 example: 15.2
+ *               measurements:
+ *                 type: object
+ *                 properties:
+ *                   chest:
+ *                     type: number
+ *                     example: 100
+ *                   waist:
+ *                     type: number
+ *                     example: 85
+ *                   hips:
+ *                     type: number
+ *                     example: 95
+ *                   thighs:
+ *                     type: number
+ *                     example: 60
+ *                   arms:
+ *                     type: number
+ *                     example: 35
+ *                   unit:
+ *                     type: string
+ *                     enum: [cm, inches]
+ *                     example: "cm"
+ *               photos:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                       example: "https://res.cloudinary.com/example/image.jpg"
+ *                     type:
+ *                       type: string
+ *                       enum: [front, side, back]
+ *                       example: "front"
+ *               strengthBenchmarks:
+ *                 type: object
+ *                 properties:
+ *                   benchPress:
+ *                     type: number
+ *                     example: 100
+ *                   squat:
+ *                     type: number
+ *                     example: 150
+ *                   deadlift:
+ *                     type: number
+ *                     example: 180
+ *                   pullUps:
+ *                     type: number
+ *                     example: 12
+ *                   pushUps:
+ *                     type: number
+ *                     example: 25
+ *               cardioMetrics:
+ *                 type: object
+ *                 properties:
+ *                   restingHeartRate:
+ *                     type: number
+ *                     example: 65
+ *                   vo2Max:
+ *                     type: number
+ *                     example: 45
+ *                   runningPace:
+ *                     type: number
+ *                     example: 5.5
+ *               notes:
+ *                 type: string
+ *                 example: "Feeling strong today!"
+ *     responses:
+ *       201:
+ *         description: Progress entry created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress entry created successfully"
+ *                     data:
+ *                       $ref: '#/components/schemas/Progress'
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post("/progress", createProgress);
+
+/**
+ * @swagger
+ * /api/workouts/progress:
+ *   get:
+ *     summary: Get user progress entries
+ *     description: Retrieve all progress entries for the authenticated user with optional filtering and pagination
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of progress entries per page
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for filtering (ISO 8601 format)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for filtering (ISO 8601 format)
+ *     responses:
+ *       200:
+ *         description: Progress entries retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress entries retrieved successfully"
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         progressEntries:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/Progress'
+ *                         pagination:
+ *                           type: object
+ *                           properties:
+ *                             current:
+ *                               type: integer
+ *                               example: 1
+ *                             pages:
+ *                               type: integer
+ *                               example: 5
+ *                             total:
+ *                               type: integer
+ *                               example: 50
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/progress", getProgressEntries);
+
+/**
+ * @swagger
+ * /api/workouts/progress/stats:
+ *   get:
+ *     summary: Get progress statistics
+ *     description: Retrieve progress statistics and analytics for the authenticated user
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for filtering (ISO 8601 format)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for filtering (ISO 8601 format)
+ *     responses:
+ *       200:
+ *         description: Progress statistics retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress statistics retrieved successfully"
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         totalEntries:
+ *                           type: integer
+ *                           example: 25
+ *                         latestWeight:
+ *                           type: number
+ *                           example: 75.5
+ *                         earliestWeight:
+ *                           type: number
+ *                           example: 80.0
+ *                         avgBodyFat:
+ *                           type: number
+ *                           example: 15.2
+ *                         weightChange:
+ *                           type: number
+ *                           example: -4.5
+ *                         avgBenchPress:
+ *                           type: number
+ *                           example: 100.5
+ *                         avgSquat:
+ *                           type: number
+ *                           example: 150.0
+ *                         avgDeadlift:
+ *                           type: number
+ *                           example: 180.0
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/progress/stats", getProgressStats);
+
+/**
+ * @swagger
+ * /api/workouts/progress/trends:
+ *   get:
+ *     summary: Get progress trends
+ *     description: Retrieve progress trends over time for the authenticated user
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for filtering (ISO 8601 format)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for filtering (ISO 8601 format)
+ *       - in: query
+ *         name: metric
+ *         schema:
+ *           type: string
+ *           enum: [weight, bodyFat, benchPress, squat, deadlift, pullUps, pushUps, restingHR, vo2Max]
+ *         description: Specific metric to track trends for
+ *     responses:
+ *       200:
+ *         description: Progress trends retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress trends retrieved successfully"
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         trends:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               date:
+ *                                 type: string
+ *                                 format: date-time
+ *                               value:
+ *                                 type: number
+ *                         metric:
+ *                           type: string
+ *                           example: "weight"
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/progress/trends", getProgressTrends);
+
+/**
+ * @swagger
+ * /api/workouts/progress/{id}:
+ *   get:
+ *     summary: Get progress entry by ID
+ *     description: Retrieve a specific progress entry by its ID
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The progress entry ID
+ *     responses:
+ *       200:
+ *         description: Progress entry retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress entry retrieved successfully"
+ *                     data:
+ *                       $ref: '#/components/schemas/Progress'
+ *       400:
+ *         description: Bad request - invalid progress entry ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Progress entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/progress/:id", getProgressEntry);
+
+/**
+ * @swagger
+ * /api/workouts/progress/{id}:
+ *   put:
+ *     summary: Update progress entry
+ *     description: Update a specific progress entry by its ID
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The progress entry ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date-time
+ *               weight:
+ *                 type: object
+ *                 properties:
+ *                   value:
+ *                     type: number
+ *                   unit:
+ *                     type: string
+ *                     enum: [kg, lbs]
+ *               bodyFatPercentage:
+ *                 type: number
+ *               measurements:
+ *                 type: object
+ *                 properties:
+ *                   chest:
+ *                     type: number
+ *                   waist:
+ *                     type: number
+ *                   hips:
+ *                     type: number
+ *                   thighs:
+ *                     type: number
+ *                   arms:
+ *                     type: number
+ *                   unit:
+ *                     type: string
+ *                     enum: [cm, inches]
+ *               photos:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                     type:
+ *                       type: string
+ *                       enum: [front, side, back]
+ *               strengthBenchmarks:
+ *                 type: object
+ *                 properties:
+ *                   benchPress:
+ *                     type: number
+ *                   squat:
+ *                     type: number
+ *                   deadlift:
+ *                     type: number
+ *                   pullUps:
+ *                     type: number
+ *                   pushUps:
+ *                     type: number
+ *               cardioMetrics:
+ *                 type: object
+ *                 properties:
+ *                   restingHeartRate:
+ *                     type: number
+ *                   vo2Max:
+ *                     type: number
+ *                   runningPace:
+ *                     type: number
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Progress entry updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress entry updated successfully"
+ *                     data:
+ *                       $ref: '#/components/schemas/Progress'
+ *       400:
+ *         description: Bad request - invalid progress entry ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Progress entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.put("/progress/:id", updateProgressEntry);
+
+/**
+ * @swagger
+ * /api/workouts/progress/{id}:
+ *   delete:
+ *     summary: Delete progress entry
+ *     description: Delete a specific progress entry by its ID
+ *     tags: [Progress]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The progress entry ID
+ *     responses:
+ *       200:
+ *         description: Progress entry deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     success:
+ *                       example: true
+ *                     message:
+ *                       example: "Progress entry deleted successfully"
+ *                     data:
+ *                       example: null
+ *       400:
+ *         description: Bad request - invalid progress entry ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Progress entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.delete("/progress/:id", deleteProgressEntry);
 
 export default router;
