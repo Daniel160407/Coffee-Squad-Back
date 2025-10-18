@@ -61,3 +61,25 @@ export async function loginPost(req, res) {
       .json({ success: false, message: error.message, data: error });
   }
 }
+
+export async function logoutPost(req, res) {
+  try {
+    // Clear the JWT token cookie
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "user logged out successfully",
+      data: null,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res
+      .status(400)
+      .json({ success: false, message: error.message, data: error });
+  }
+}
