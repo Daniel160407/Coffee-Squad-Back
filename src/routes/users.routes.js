@@ -8,11 +8,9 @@ import {
   getUserInfo,
 } from "../controllers/user.controller.js";
 
-usersRouter.use(protectRoute);
-
 usersRouter.get("/", getUsers);
 usersRouter.get("/getuserinfo", protectRoute, getUserInfo);
-usersRouter.delete("/delete/:id", deleteExistingUser);
-usersRouter.put("/updatestats:id", updateUserStats);
+usersRouter.delete("/delete/:id", protectRoute, deleteExistingUser);
+usersRouter.put("/updatestats:id", protectRoute, updateUserStats);
 
 export default usersRouter;

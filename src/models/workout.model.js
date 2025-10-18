@@ -62,6 +62,10 @@ const workoutSchema = new mongoose.Schema(
     notes: {
       type: String,
     },
+
+    distance: {
+      type: Number,
+    },
   },
 
   {
