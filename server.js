@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./src/config/db.js";
+import authRouter from "./src/routes/auth.js"
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ app.use(
     origin: "*",
   })
 );
+
+app.use("/auth", authRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
