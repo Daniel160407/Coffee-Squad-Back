@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const exerciseSchema = new mongoose.Schema({
   name: {
@@ -42,33 +42,15 @@ const workoutSchema = new mongoose.Schema(
     },
     exercises: [exerciseSchema],
     totalDuration: {
-      type: Number, // in minutes
+      type: Number,
       required: true,
     },
     caloriesBurned: {
       type: Number,
       default: 0,
     },
-    intensity: {
-      type: String,
-      enum: ["low", "moderate", "high", "extreme"],
-      default: "moderate",
-    },
-    mood: {
-      type: String,
-      enum: ["excellent", "good", "okay", "tired", "exhausted"],
-    },
-    notes: String,
-    isCompleted: {
-      type: Boolean,
-      default: false,
-    },
-    aiGenerated: {
-      type: Boolean,
-      default: false,
-    },
     performanceScore: {
-      type: Number, // 0-100
+      type: Number,
       min: 0,
       max: 100,
     },
