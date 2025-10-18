@@ -70,30 +70,6 @@ const router = Router();
  *           type: string
  *           description: The user's password
  *           example: "password123"
- *     ApiResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           description: Indicates if the request was successful
- *         message:
- *           type: string
- *           description: Response message
- *         data:
- *           type: object
- *           description: Response data
- *     ErrorResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: false
- *         message:
- *           type: string
- *           description: Error message
- *         data:
- *           type: object
- *           description: Error details
  */
 
 /**
