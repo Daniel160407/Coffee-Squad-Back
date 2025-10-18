@@ -6,6 +6,9 @@ import swaggerSpec from "./src/config/swagger.js";
 import swaggerUi from "swagger-ui-express";
 import geminiRouter from "./src/routes/gemini.routes.js";
 import { connectDB } from "./src/config/db.js";
+import authRouter from "./src/routes/auth.js"
+import cookieParser from "cookie-parser";
+import usersRouter from "./src/routes/users.js"
 
 dotenv.config();
 
@@ -32,6 +35,10 @@ app.use(
     customSiteTitle: "FitFusion API Docs",
   })
 );
+
+
+app.use("/auth", authRouter);
+app.use("/users", usersRouter);
 
 
 app.listen(PORT, () => {

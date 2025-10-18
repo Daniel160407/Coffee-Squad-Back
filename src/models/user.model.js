@@ -13,6 +13,13 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
+    validate: {
+      validator: async function(email) {
+        const value = await this.constructor.findOne({ email });
+        return !value;
+      },
+      message: "email address is already in use"
+    }
   },
   password: {
     type: String,
@@ -61,7 +68,7 @@ const userSchema = new mongoose.Schema({
       "endurance",
       "general-fitness",
       "athletic-performance",
-    ],
+    ]
   },
   activityLevel: {
     type: String,
