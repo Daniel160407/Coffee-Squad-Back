@@ -54,7 +54,16 @@ const workoutSchema = new mongoose.Schema(
       min: 0,
       max: 100,
     },
+
+    pace: {
+      type: String,
+    },
+
+    notes: {
+      type: String,
+    },
   },
+
   {
     timestamps: true,
   }
