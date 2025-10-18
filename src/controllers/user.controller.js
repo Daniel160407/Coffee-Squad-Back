@@ -24,20 +24,49 @@ export async function deleteExistingUser(req, res) {
     .json({ success: true, message: "user successfully deleted", data: null });
 }
 
-export async function updateUserInfo(req, res) {
-  const {
-    age,
-    gender,
-    height,
-    currentWeight,
-    targetWeight,
-    fitnessGoal,
-    activityLevel,
-    availableEquipment,
-    dietaryPreference,
-  } = req.body;
+export async function updateUserStats(req, res) {
+  try {
+    const { id } = req.params;
 
-  await User.updateOne;
+    const {
+      age,
+      gender,
+      height,
+      currentWeight,
+      targetWeight,
+      fitnessGoal,
+      activityLevel,
+      availableEquipment,
+      dietaryPreference,
+    } = req.body;
+
+    await User.findByIdAndUpdate(
+      { _id: id },
+      {
+        age,
+        gender,
+        height,
+        currentWeight,
+        targetWeight,
+        fitnessGoal,
+        activityLevel,
+        availableEquipment,
+        dietaryPreference,
+      }
+    );
+
+    const user = await User.findOne({ _id: id });
+
+    res.status(200).json({
+      success: true,
+      message: "successfully updated user",
+      data: user,
+    });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, message: error.message, data: error });
+  }
 }
 
 export async function getUserInfo(req, res) {
