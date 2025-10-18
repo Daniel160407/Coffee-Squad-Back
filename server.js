@@ -26,8 +26,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/gemini", geminiRouter);
-app.use("/auth", authRouter);
-app.use("/users", usersRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", usersRouter);
 
 app.use(
   "/api-docs",
