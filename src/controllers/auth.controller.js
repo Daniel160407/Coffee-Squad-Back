@@ -47,7 +47,7 @@ export async function loginPost(req, res) {
         data: null,
       });
 
-    generateToken({ userId: user._id }, res);
+    generateToken(user._id, res);
 
     res.status(200).json({
       success: true,
