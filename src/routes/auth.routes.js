@@ -99,16 +99,7 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/ApiResponse'
- *                 - type: object
- *                   properties:
- *                     success:
- *                       example: true
- *                     message:
- *                       example: "user created successfully!"
- *                     data:
- *                       $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/SuccessResponse'
  *         headers:
  *           Set-Cookie:
  *             description: JWT token set as httpOnly cookie
@@ -120,11 +111,7 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               success: false
- *               message: "User already exists"
- *               data: {}
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/register", registerPost);
 
@@ -150,16 +137,7 @@ router.post("/register", registerPost);
  *         content:
  *           application/json:
  *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/ApiResponse'
- *                 - type: object
- *                   properties:
- *                     success:
- *                       example: true
- *                     message:
- *                       example: "user authenticated successfully"
- *                     data:
- *                       $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/SuccessResponse'
  *         headers:
  *           Set-Cookie:
  *             description: JWT token set as httpOnly cookie
@@ -171,21 +149,13 @@ router.post("/register", registerPost);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               success: false
- *               message: "email or password incorrect"
- *               data: null
+ *               $ref: '#/components/schemas/Error'
  *       400:
  *         description: Bad request - validation error
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               success: false
- *               message: "Validation error"
- *               data: {}
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/login", loginPost);
 
@@ -202,16 +172,7 @@ router.post("/login", loginPost);
  *         content:
  *           application/json:
  *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/ApiResponse'
- *                 - type: object
- *                   properties:
- *                     success:
- *                       example: true
- *                     message:
- *                       example: "user logged out successfully"
- *                     data:
- *                       example: null
+ *               $ref: '#/components/schemas/SuccessResponse'
  *         headers:
  *           Set-Cookie:
  *             description: JWT token cookie cleared
@@ -223,7 +184,7 @@ router.post("/login", loginPost);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/logout", logoutPost);
 
