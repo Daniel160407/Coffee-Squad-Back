@@ -8,7 +8,7 @@ const geminiRouter = express.Router();
  * /api/gemini/insight:
  *   post:
  *     summary: Generate AI fitness insight
- *     description: Generate personalized fitness insights and recommendations using Gemini AI based on user data
+ *     description: Generate personalized fitness insights and recommendations using Gemini AI. Creates and saves the insight to the database with structured data including quick replies and recommendations.
  *     tags: [Gemini AI]
  *     security:
  *       - bearerAuth: []
@@ -20,14 +20,25 @@ const geminiRouter = express.Router();
  *             type: object
  *             required:
  *               - prompt
+ *               - userId
  *             properties:
  *               prompt:
  *                 type: string
  *                 description: The prompt for generating fitness insights
  *                 example: "Analyze my workout performance and provide recommendations"
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user requesting the insight
+ *                 example: "507f1f77bcf86cd799439011"
+ *               insightType:
+ *                 type: string
+ *                 enum: ["daily-summary", "weekly-summary", "monthly-summary", "performance-analysis", "nutrition-feedback", "recommendation", "custom-query"]
+ *                 description: Type of insight to generate
+ *                 default: "custom-query"
+ *                 example: "custom-query"
  *     responses:
  *       200:
- *         description: AI insight generated successfully
+ *         description: AI insight generated and saved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -36,20 +47,21 @@ const geminiRouter = express.Router();
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 text:
- *                   type: string
- *                   description: Generated AI insight text
- *                   example: "Based on your recent workouts, I recommend focusing on recovery..."
- *                 timestamp:
- *                   type: string
- *                   format: date-time
- *                   example: "2024-01-15T10:30:00.000Z"
+ *                 data:
+ *                   $ref: '#/components/schemas/AIInsight'
  *       400:
- *         description: Bad request - missing prompt
+ *         description: Bad request - missing required fields
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Error'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Prompt is required"
  *       401:
  *         description: Unauthorized - invalid or missing token
  *         content:
@@ -61,7 +73,14 @@ const geminiRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Error'
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while processing the request"
  */
 geminiRouter.post("/insight", generateInsight);
 
