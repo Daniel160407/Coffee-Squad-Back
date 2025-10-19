@@ -29,3 +29,32 @@ export const protectRoute = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const checkAlreadyLoggedIn = async (req, res, next) => {
+  try {
+    const token = req.cookies.access_token;
+    if (!token) {
+      return next(); // No token, allow login
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      return next(); // Invalid token, allow login
+    }
+
+    const user = await User.findById(decoded.userId).select("-password");
+    if (!user) {
+      return next(); // User not found, allow login
+    }
+
+    // User is already logged in
+    return res.status(400).json({
+      success: false,
+      message: "User is already logged in. Please logout first.",
+      data: null,
+    });
+  } catch (error) {
+    // If there's any error with the token, allow login
+    return next();
+  }
+};
