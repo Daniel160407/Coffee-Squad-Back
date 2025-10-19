@@ -68,7 +68,8 @@ export async function logoutPost(req, res) {
     res.clearCookie("access_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
     });
 
     res.status(200).json({
@@ -81,5 +82,31 @@ export async function logoutPost(req, res) {
     res
       .status(400)
       .json({ success: false, message: error.message, data: error });
+  }
+}
+
+// Debug endpoint to test cookie functionality
+export async function testCookie(req, res) {
+  try {
+    const cookies = req.cookies;
+    const headers = req.headers;
+
+    res.status(200).json({
+      success: true,
+      message: "Cookie test endpoint",
+      data: {
+        cookies: cookies,
+        cookieHeader: headers.cookie,
+        userAgent: headers["user-agent"],
+        origin: headers.origin,
+        referer: headers.referer,
+        environment: process.env.NODE_ENV,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 }
