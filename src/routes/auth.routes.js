@@ -4,6 +4,7 @@ import {
   loginPost,
   logoutPost,
 } from "../controllers/auth.controller.js";
+import { checkAlreadyLoggedIn } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -120,7 +121,7 @@ router.post("/register", registerPost);
  * /api/auth/login:
  *   post:
  *     summary: Login user
- *     description: Authenticate user with email and password
+ *     description: Authenticate user with email and password. If user is already logged in, returns an error.
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -144,20 +145,29 @@ router.post("/register", registerPost);
  *             schema:
  *               type: string
  *               example: "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict"
+ *       400:
+ *         description: Bad request - user already logged in or validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "User is already logged in. Please logout first."
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
  *       401:
  *         description: Unauthorized - invalid credentials
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *       400:
- *         description: Bad request - validation error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  */
-router.post("/login", loginPost);
+router.post("/login", checkAlreadyLoggedIn, loginPost);
 
 /**
  * @swagger
