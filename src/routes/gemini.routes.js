@@ -69,6 +69,6 @@ const geminiRouter = express.Router();
  *                   type: string
  *                   example: "An error occurred while processing the request"
  */
-geminiRouter.post("/", generateInsight);
+geminiRouter.post("/insight", generateInsight);
 
 export default geminiRouter;
