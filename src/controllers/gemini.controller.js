@@ -1,5 +1,5 @@
 import geminiService from "../services/gemini.service.js";
-import AIInsight from "../models/ai_insight.model.js"; // Import your Mongoose model
+import AIInsight from "../models/ai_insight.model.js";
 
 /**
  * Renamed to 'generateInsight' as it's more descriptive.

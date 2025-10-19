@@ -90,7 +90,7 @@ const aiInsightSchema = new mongoose.Schema(
     },
     aiModel: {
       type: String,
-      default: "gemini-2.5-flash", // Updated to match your config
+      default: "gemini-2.5-pro",
     },
     isRead: {
       type: Boolean,

@@ -9,7 +9,7 @@ export async function registerPost(req, res) {
       name,
       email,
       password,
-    });
+    }).select("-password");
 
     generateToken(user._id, res);
     res.status(201).json({
@@ -29,7 +29,7 @@ export async function loginPost(req, res) {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user)
       return res.status(401).json({
@@ -47,7 +47,7 @@ export async function loginPost(req, res) {
         data: null,
       });
 
-    generateToken({ userId: user._id }, res);
+    generateToken(user._id, res);
 
     res.status(200).json({
       success: true,
@@ -65,7 +65,7 @@ export async function loginPost(req, res) {
 export async function logoutPost(req, res) {
   try {
     // Clear the JWT token cookie
-    res.clearCookie("token", {
+    res.clearCookie("access_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",

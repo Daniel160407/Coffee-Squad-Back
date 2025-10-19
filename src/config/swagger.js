@@ -13,6 +13,10 @@ const options = {
         url: "http://localhost:3000",
         description: "Development server",
       },
+      {
+        url: "https://coffee-squad-back.onrender.com",
+        description: "Production server",
+      },
     ],
     components: {
       securitySchemes: {
@@ -302,150 +306,189 @@ const options = {
         // ============================================
 
         Program: {
-          type: 'object',
-          required: ['userId', 'title', 'description', 'goal', 'difficulty', 'duration'],
+          type: "object",
+          required: [
+            "userId",
+            "title",
+            "description",
+            "goal",
+            "difficulty",
+            "duration",
+          ],
           properties: {
             _id: {
-              type: 'string',
-              example: '507f1f77bcf86cd799439011'
+              type: "string",
+              example: "507f1f77bcf86cd799439011",
             },
             userId: {
-              type: 'string',
-              example: '507f1f77bcf86cd799439011'
+              type: "string",
+              example: "507f1f77bcf86cd799439011",
             },
             title: {
-              type: 'string',
-              example: '12-Week Muscle Building Program'
+              type: "string",
+              example: "12-Week Muscle Building Program",
             },
             description: {
-              type: 'string',
-              example: 'A comprehensive program designed to build lean muscle mass'
+              type: "string",
+              example:
+                "A comprehensive program designed to build lean muscle mass",
             },
             goal: {
-              type: 'string',
-              enum: ['fat-loss', 'muscle-gain', 'endurance', 'general-fitness', 'athletic-performance', 'strength', 'flexibility'],
-              example: 'muscle-gain'
+              type: "string",
+              enum: [
+                "fat-loss",
+                "muscle-gain",
+                "endurance",
+                "general-fitness",
+                "athletic-performance",
+                "strength",
+                "flexibility",
+              ],
+              example: "muscle-gain",
             },
             difficulty: {
-              type: 'string',
-              enum: ['beginner', 'intermediate', 'advanced'],
-              example: 'intermediate'
+              type: "string",
+              enum: ["beginner", "intermediate", "advanced"],
+              example: "intermediate",
             },
             duration: {
-              type: 'object',
+              type: "object",
               properties: {
                 weeks: {
-                  type: 'number',
-                  example: 12
+                  type: "number",
+                  example: 12,
                 },
                 daysPerWeek: {
-                  type: 'number',
-                  example: 4
-                }
-              }
+                  type: "number",
+                  example: 4,
+                },
+              },
             },
             weeks: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'object',
+                type: "object",
                 properties: {
-                  weekNumber: { type: 'number', example: 1 },
-                  focus: { type: 'string', example: 'Strength Building' },
+                  weekNumber: { type: "number", example: 1 },
+                  focus: { type: "string", example: "Strength Building" },
                   workouts: {
-                    type: 'array',
+                    type: "array",
                     items: {
-                      type: 'object',
+                      type: "object",
                       properties: {
-                        day: { type: 'number', example: 1 },
-                        workoutId: { type: 'string' },
-                        title: { type: 'string', example: 'Upper Body Strength' },
-                        type: { type: 'string', enum: ['strength', 'cardio', 'hiit', 'flexibility', 'sports', 'mixed', 'rest'] },
-                        completed: { type: 'boolean', default: false },
-                        completedAt: { type: 'string', format: 'date-time' }
-                      }
-                    }
-                  }
-                }
-              }
+                        day: { type: "number", example: 1 },
+                        workoutId: { type: "string" },
+                        title: {
+                          type: "string",
+                          example: "Upper Body Strength",
+                        },
+                        type: {
+                          type: "string",
+                          enum: [
+                            "strength",
+                            "cardio",
+                            "hiit",
+                            "flexibility",
+                            "sports",
+                            "mixed",
+                            "rest",
+                          ],
+                        },
+                        completed: { type: "boolean", default: false },
+                        completedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
             },
             equipmentRequired: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string',
-                enum: ['dumbbells', 'barbell', 'kettlebell', 'resistance-bands', 'pull-up-bar', 'bench', 'cardio-machine', 'bodyweight-only']
-              }
+                type: "string",
+                enum: [
+                  "dumbbells",
+                  "barbell",
+                  "kettlebell",
+                  "resistance-bands",
+                  "pull-up-bar",
+                  "bench",
+                  "cardio-machine",
+                  "bodyweight-only",
+                ],
+              },
             },
             tags: {
-              type: 'array',
-              items: { type: 'string' },
-              example: ['hypertrophy', 'strength']
+              type: "array",
+              items: { type: "string" },
+              example: ["hypertrophy", "strength"],
             },
             creator: {
-              type: 'string',
-              enum: ['ai-generated', 'user-created', 'coach', 'template'],
-              example: 'ai-generated'
+              type: "string",
+              enum: ["ai-generated", "user-created", "coach", "template"],
+              example: "ai-generated",
             },
             status: {
-              type: 'string',
-              enum: ['draft', 'active', 'completed', 'paused', 'abandoned'],
-              example: 'active'
+              type: "string",
+              enum: ["draft", "active", "completed", "paused", "abandoned"],
+              example: "active",
             },
             startDate: {
-              type: 'string',
-              format: 'date-time'
+              type: "string",
+              format: "date-time",
             },
             endDate: {
-              type: 'string',
-              format: 'date-time'
+              type: "string",
+              format: "date-time",
             },
             currentWeek: {
-              type: 'number',
-              example: 3
+              type: "number",
+              example: 3,
             },
             progress: {
-              type: 'object',
+              type: "object",
               properties: {
-                completedWorkouts: { type: 'number', example: 8 },
-                totalWorkouts: { type: 'number', example: 48 },
-                completionPercentage: { type: 'number', example: 16.7 }
-              }
+                completedWorkouts: { type: "number", example: 8 },
+                totalWorkouts: { type: "number", example: 48 },
+                completionPercentage: { type: "number", example: 16.7 },
+              },
             },
             nutrition: {
-              type: 'object',
+              type: "object",
               properties: {
-                includeNutritionPlan: { type: 'boolean', example: true },
-                dailyCalories: { type: 'number', example: 2500 },
+                includeNutritionPlan: { type: "boolean", example: true },
+                dailyCalories: { type: "number", example: 2500 },
                 macros: {
-                  type: 'object',
+                  type: "object",
                   properties: {
-                    protein: { type: 'number', example: 180 },
-                    carbs: { type: 'number', example: 250 },
-                    fats: { type: 'number', example: 80 }
-                  }
-                }
-              }
+                    protein: { type: "number", example: 180 },
+                    carbs: { type: "number", example: 250 },
+                    fats: { type: "number", example: 80 },
+                  },
+                },
+              },
             },
             isPublic: {
-              type: 'boolean',
-              example: false
+              type: "boolean",
+              example: false,
             },
             likes: {
-              type: 'number',
-              example: 45
+              type: "number",
+              example: 45,
             },
             averageRating: {
-              type: 'number',
-              example: 4.5
+              type: "number",
+              example: 4.5,
             },
             createdAt: {
-              type: 'string',
-              format: 'date-time'
+              type: "string",
+              format: "date-time",
             },
             updatedAt: {
-              type: 'string',
-              format: 'date-time'
-            }
-          }
+              type: "string",
+              format: "date-time",
+            },
+          },
         },
 
         // ============================================
