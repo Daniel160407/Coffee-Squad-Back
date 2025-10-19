@@ -65,7 +65,7 @@ export async function loginPost(req, res) {
 export async function logoutPost(req, res) {
   try {
     // Clear the JWT token cookie
-    res.clearCookie("token", {
+    res.clearCookie("access_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
