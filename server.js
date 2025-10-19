@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://coffee-squad-back.onrender.com"],
     credentials: true,
   })
 );
