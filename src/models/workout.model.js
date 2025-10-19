@@ -7,10 +7,10 @@ const exerciseSchema = new mongoose.Schema({
   },
   sets: Number,
   reps: Number,
-  duration: Number, // in seconds
+  duration: Number,
   weight: {
     value: Number,
-    unit: String, // kg, lbs
+    unit: String,
   },
   restTime: Number, // in seconds
   notes: String,

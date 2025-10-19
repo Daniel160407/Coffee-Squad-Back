@@ -1,4 +1,32 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
+/**
+ * ## QuickReplySchema
+ * Defines the structure for a single quick reply button (recommended message).
+ * This will be used as a sub-document.
+ */
+const QuickReplySchema = new mongoose.Schema(
+  {
+    /**
+     * The text displayed on the button.
+     * e.g., "Tell me more"
+     */
+    text: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    /**
+     * The payload (the request) sent back when clicked.
+     * e.g., "GET_MORE_DETAILS_NUTRITION"
+     */
+    payload: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false } // No need for separate _ids on sub-documents
+);
 
 const aiInsightSchema = new mongoose.Schema(
   {
@@ -20,6 +48,7 @@ const aiInsightSchema = new mongoose.Schema(
         "performance-analysis",
         "nutrition-feedback",
         "recommendation",
+        "custom-query", // Added for more flexibility
       ],
       required: true,
     },
@@ -27,12 +56,20 @@ const aiInsightSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    /**
+     * This is your "freestyle" message content.
+     */
     summary: {
       type: String,
       required: true,
     },
+    /**
+     * NEW: This array will hold the "quick messages" (buttons).
+     * It will be empty for freestyle-only messages.
+     */
+    quickReplies: [QuickReplySchema],
     details: {
-      type: mongoose.Schema.Types.Mixed, // Flexible structure for various insights
+      type: mongoose.Schema.Types.Mixed, // Flexible structure
     },
     recommendations: [
       {
@@ -53,7 +90,7 @@ const aiInsightSchema = new mongoose.Schema(
     },
     aiModel: {
       type: String,
-      default: "gemini-2.0-flash",
+      default: "gemini-2.5-flash", // Updated to match your config
     },
     isRead: {
       type: Boolean,

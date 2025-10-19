@@ -1,5 +1,5 @@
 import express from "express";
-import { generateText } from "../controllers/gemini.controller.js";
+import { generateInsight } from "../controllers/gemini.controller.js";
 
 const geminiRouter = express.Router();
 
@@ -69,6 +69,6 @@ const geminiRouter = express.Router();
  *                   type: string
  *                   example: "An error occurred while processing the request"
  */
-geminiRouter.post("/", generateText);
+geminiRouter.post("/", generateInsight);
 
 export default geminiRouter;
