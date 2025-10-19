@@ -8,11 +8,12 @@ const generateToken = (userId, res) => {
   res.cookie("access_token", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true, // prevents XSS (cross-site scripting) attacks
-    sameSite: "strict", // prevents CSRF (cross-site request forgery) attacks
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // more flexible for development
     secure: process.env.NODE_ENV === "production",
+    path: "/", // ensure cookie is available for all routes
   });
 
   return token;
 };
 
-export default generateToken
+export default generateToken;

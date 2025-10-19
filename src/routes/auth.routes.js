@@ -3,6 +3,7 @@ import {
   registerPost,
   loginPost,
   logoutPost,
+  testCookie,
 } from "../controllers/auth.controller.js";
 import { checkAlreadyLoggedIn } from "../middlewares/auth.middleware.js";
 
@@ -197,5 +198,8 @@ router.post("/login", checkAlreadyLoggedIn, loginPost);
  *               $ref: '#/components/schemas/Error'
  */
 router.post("/logout", logoutPost);
+
+// Debug route to test cookie functionality
+router.get("/test-cookie", testCookie);
 
 export default router;
