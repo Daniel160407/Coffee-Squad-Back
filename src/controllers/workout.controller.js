@@ -26,7 +26,7 @@ export async function createWorkoutCard(req, res) {
       userId: userID,
     });
 
-    res.staus(201).json({
+    res.status(201).json({
       success: true,
       message: "workout card created successfully",
       data: card,
