@@ -9,7 +9,7 @@ export async function registerPost(req, res) {
       name,
       email,
       password,
-    });
+    }).select("-password");
 
     generateToken(user._id, res);
     res.status(201).json({
@@ -29,7 +29,7 @@ export async function loginPost(req, res) {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user)
       return res.status(401).json({
